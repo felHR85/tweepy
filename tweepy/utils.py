@@ -1,13 +1,22 @@
 # Tweepy
 # Copyright 2010 Joshua Roesslein
+# Felipe Herranz (felHR85@gmail.com)
 # See LICENSE for details.
 
 from datetime import datetime
 import time
-import htmlentitydefs
+# htmlentitydefs was renamed as html.entities in python3
+try:
+    import html.entities as htmlentitydefs
+except ImportError:
+    try:
+        import htmlentitydefs
+    except ImportError:
+        raise ImportError("Import error. There is no html.entities or htmlentitydefs module")
+
 import re
 import locale
-from urllib import quote
+from urllib.parse import quote
 
 
 def parse_datetime(string):
@@ -81,15 +90,9 @@ def convert_to_utf8_str(arg):
 
 def import_simplejson():
     try:
-        import simplejson as json
+        import json # Python 2.6+
     except ImportError:
-        try:
-            import json  # Python 2.6+
-        except ImportError:
-            try:
-                from django.utils import simplejson as json  # Google App Engine
-            except ImportError:
-                raise ImportError, "Can't load a json library"
+        raise ImportError("Can't load a json library")
 
     return json
 
