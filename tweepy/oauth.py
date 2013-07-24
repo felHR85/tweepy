@@ -26,7 +26,7 @@ import cgi
 import urllib
 import time
 import random
-import urlparse
+from urllib import parse as urlparse
 import hmac
 import binascii
 
@@ -47,7 +47,7 @@ def build_authenticate_header(realm=''):
 
 def escape(s):
     """Escape a URL including any /."""
-    return urllib.quote(s, safe='~')
+    return urlparse.quote(s, safe='~')
 
 def _utf8_str(s):
     """Convert unicode to utf-8."""

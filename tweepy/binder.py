@@ -8,11 +8,11 @@ except ImportError:
     import httplib
 except ImportError:
     raise ImportError("There is no http.client or httplib module")
-    
+
 import urllib
 import time
 import re
-from StringIO import StringIO
+from io import StringIO
 import gzip
 
 from tweepy.error import TweepError
@@ -137,9 +137,9 @@ def bind_api(**config):
             while retries_performed < self.retry_count + 1:
                 # Open connection
                 if self.api.secure:
-                    conn = httplib.HTTPSConnection(self.host, timeout=self.api.timeout)
+                    conn = http.client.HTTPSConnection(self.host, timeout=self.api.timeout)
                 else:
-                    conn = httplib.HTTPConnection(self.host, timeout=self.api.timeout)
+                    conn = http.client.HTTPConnection(self.host, timeout=self.api.timeout)
 
                 # Apply authentication
                 if self.api.auth:

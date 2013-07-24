@@ -2,7 +2,7 @@
 # Copyright 2009-2010 Joshua Roesslein
 # See LICENSE for details.
 
-import httplib
+import http.client as httplib
 from socket import timeout
 from threading import Thread
 from time import sleep
@@ -132,7 +132,7 @@ class Stream(object):
                     break
                 conn.close()
                 sleep(self.snooze_time)
-            except Exception, exception:
+            except Exception as exception:
                 # any other exception is fatal, so kill loop
                 break
 
@@ -245,4 +245,3 @@ class Stream(object):
         if self.running is False:
             return
         self.running = False
-
