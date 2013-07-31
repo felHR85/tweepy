@@ -80,12 +80,17 @@ def unescape_html(text):
 
 def convert_to_utf8_str(arg):
     # written by Michael Norton (http://docondev.blogspot.com/)
-    if isinstance(arg, unicode):
+    if isinstance(arg, str):
         arg = arg.encode('utf-8')
     elif not isinstance(arg, str):
-        arg = str(arg)
+        arg = str(arg).encode('utf-8')
     return arg
 
+
+def convert_to_unicodePoints(arg):  # Python 3 or greater
+
+    if not isinstance(arg,str):
+        return str(arg, 'utf-8')
 
 
 def import_simplejson():

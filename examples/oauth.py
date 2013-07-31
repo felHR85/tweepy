@@ -1,4 +1,5 @@
 import tweepy
+from tweepy import OAuthHandler
 
 # == OAuth Authentication ==
 #
@@ -7,16 +8,18 @@ import tweepy
 
 # The consumer keys can be found on your application's Details
 # page located at https://dev.twitter.com/apps (under "OAuth settings")
-consumer_key = "u28rrBRDpCOIoqVSOVpkg"
-consumer_secret = "zUaJ5OmkYdOqeycqUU9uJMIoqdZwdWr5zeAEKT3ig"
+consumer_key = ""  
+consumer_secret = ""
 
 # The access tokens can be found on your applications's Details
 # page located at https://dev.twitter.com/apps (located 
 # under "Your access token")
-access_token = "329902855-hTwJYCbbELHHdUD6ikpIB4bpATMaGnDfCGr0DGvg"
-access_token_secret = "z12EoqKxsWW5fiasUyO6aGKs5ZTpla8kjXt9supyByQ"
 
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+access_token = ""
+access_token_secret = ""
+
+
+auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
@@ -28,4 +31,4 @@ print (api.me().name)
 # If the application settings are set for "Read and Write" then
 # this line should tweet out the message to your account's 
 # timeline. The "Read and Write" setting is on https://dev.twitter.com/apps
-api.update_status('Tarde anodina')
+api.update_status('Tweepy is now working with Python 3 :)')

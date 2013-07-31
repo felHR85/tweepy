@@ -47,14 +47,17 @@ def build_authenticate_header(realm=''):
 
 def escape(s):
     """Escape a URL including any /."""
-    return urlparse.quote(s, safe='~')
+    s = urlparse.quote(s, safe='~')
+    return s
 
 def _utf8_str(s):
     """Convert unicode to utf-8."""
-    if isinstance(s, unicode):
-        return s.encode("utf-8")
+    if isinstance(s, str): # if isinstance(s,unicode)
+        return s.encode('utf-8')
+    elif isinstance(s,bytes):
+        return s
     else:
-        return str(s)
+        return str(s).encode('utf-8')
 
 def generate_timestamp():
     """Get seconds since epoch (UTC)."""
@@ -62,11 +65,12 @@ def generate_timestamp():
 
 def generate_nonce(length=8):
     """Generate pseudorandom number."""
-    return ''.join([str(random.randint(0, 9)) for i in range(length)])
+    return''.join([str(random.randint(0, 9)) for i in range(length)])
 
 def generate_verifier(length=8):
     """Generate pseudorandom number."""
-    return ''.join([str(random.randint(0, 9)) for i in range(length)])
+    s = ''.join([str(random.randint(0, 9)) for i in range(length)])
+    return _utf8_str(s)
 
 
 class OAuthConsumer(object):
@@ -80,8 +84,8 @@ class OAuthConsumer(object):
     secret = None
 
     def __init__(self, key, secret):
-        self.key = key
-        self.secret = secret
+        self.key = key  #key
+        self.secret = secret #secret
 
 
 class OAuthToken(object):
@@ -99,8 +103,8 @@ class OAuthToken(object):
     verifier = None
 
     def __init__(self, key, secret):
-        self.key = key
-        self.secret = secret
+        self.key = key  #key
+        self.secret = secret  #secret
 
     def set_callback(self, callback):
         self.callback = callback
@@ -204,7 +208,7 @@ class OAuthRequest(object):
         auth_header = 'OAuth realm="%s"' % realm
         # Add the oauth parameters.
         if self.parameters:
-            for k, v in self.parameters.iteritems():
+            for k, v in self.parameters.items(): #for k, v in self.parameters.iteritems():
                 if k[:6] == 'oauth_':
                     auth_header += ', %s="%s"' % (k, escape(str(v)))
         return {'Authorization': auth_header}
@@ -613,12 +617,11 @@ class OAuthSignatureMethod_HMAC_SHA1(OAuthSignatureMethod):
             escape(oauth_request.get_normalized_http_url()),
             escape(oauth_request.get_normalized_parameters()),
         )
-
         key = '%s&' % escape(consumer.secret)
         if token:
             key += escape(token.secret)
         raw = '&'.join(sig)
-        return key, raw
+        return key,raw # return key.encode('ascii'), raw.encode('ascii')
 
     def build_signature(self, oauth_request, consumer, token):
         """Builds the base signature string."""
@@ -627,14 +630,15 @@ class OAuthSignatureMethod_HMAC_SHA1(OAuthSignatureMethod):
 
         # HMAC object.
         try:
-            import hashlib # 2.5
-            hashed = hmac.new(key, raw, hashlib.sha1)
-        except:
+            import hashlib  # 2.5 or greater
+            sha1object = hashlib.sha1
+            hashed = hmac.new(_utf8_str(key), _utf8_str(raw), sha1object)
+        except ImportError:
             import sha # Deprecated
             hashed = hmac.new(key, raw, sha)
 
         # Calculate the digest base 64.
-        return binascii.b2a_base64(hashed.digest())[:-1]
+        return str(binascii.b2a_base64(hashed.digest())[:-1], 'utf-8') # binascii.b2a_base64(hashed.digest())[:-1]
 
 
 class OAuthSignatureMethod_PLAINTEXT(OAuthSignatureMethod):

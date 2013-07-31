@@ -9,7 +9,7 @@ except ImportError:
 except ImportError:
     raise ImportError("There is no http.client or httplib module")
 
-import urllib
+import urllib.parse as urllib
 import time
 import re
 from io import StringIO
@@ -59,9 +59,9 @@ def bind_api(**config):
             self.build_path()
 
             if api.secure:
-                self.scheme = 'https://'
+                self.scheme = 'https://' 
             else:
-                self.scheme = 'http://'
+                self.scheme = 'http://'  
 
             if self.search_api:
                 self.host = api.search_host
@@ -147,7 +147,7 @@ def bind_api(**config):
                             self.scheme + self.host + url,
                             self.method, self.headers, self.parameters
                     )
-
+                    
                 # Request compression if configured
                 if self.api.compression:
                     self.headers['Accept-encoding'] = 'gzip'

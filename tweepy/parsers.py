@@ -4,6 +4,7 @@
 
 from tweepy.models import ModelFactory
 from tweepy.utils import import_simplejson
+from tweepy.utils import convert_to_unicodePoints
 from tweepy.error import TweepError
 
 
@@ -46,12 +47,13 @@ class JSONParser(Parser):
         self.json_lib = import_simplejson()
 
     def parse(self, method, payload):
+        payload = convert_to_unicodePoints(payload)
         try:
             json = self.json_lib.loads(payload)
         except Exception as e:
             raise TweepError('Failed to parse JSON payload: %s' % e)
 
-        needsCursors = method.parameters.has_key('cursor')
+        needsCursors = 'cursor' in method.parameters   # method.parameters.has_key('cursor')
         if needsCursors and isinstance(json, dict) and 'previous_cursor' in json and 'next_cursor' in json:
             cursors = json['previous_cursor'], json['next_cursor']
             return json, cursors
